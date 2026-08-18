@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+        <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<style>html.fonts-loading{visibility:hidden;opacity:0}</style>
+<script>document.documentElement.classList.add('fonts-loading');</script>
+
+<link rel="preload" href="./_/font/NotoSansDisplay.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+<link rel="preload" href="./_/font/NotoSansDisplay-Italic.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+<link rel="preload" href="./_/font/MonaspaceNeon-Var.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+<link rel="preload" href="./_/font/MonaspaceXenon-Var.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+
+<script>
+(function() {
+  'use strict';
+  
+  var revealed = false;
+  
+  var reveal = function() {
+    if (revealed) return;
+    revealed = true;
+    document.documentElement.classList.remove('fonts-loading');
+  };
+  
+  setTimeout(reveal, 3000);
+  
+  if (!('FontFace' in window) || !('fonts' in document)) {
+    setTimeout(reveal, 100);
+    return;
+  }
+  
+  var uiRoot = './_';
+  var fonts = [
+    { 
+      family: 'Noto Sans', 
+      url: uiRoot + '/font/NotoSansDisplay.woff2',
+      descriptors: { style: 'normal', weight: '100 900', stretch: '62.5% 100%' }
+    },
+    { 
+      family: 'Noto Sans', 
+      url: uiRoot + '/font/NotoSansDisplay-Italic.woff2',
+      descriptors: { style: 'italic', weight: '100 900', stretch: '62.5% 100%' }
+    },
+    { 
+      family: 'Monaspace Neon', 
+      url: uiRoot + '/font/MonaspaceNeon-Var.woff2',
+      descriptors: { style: 'normal', weight: '400' }
+    },
+    { 
+      family: 'Monaspace Xenon', 
+      url: uiRoot + '/font/MonaspaceXenon-Var.woff2',
+      descriptors: { style: 'italic', weight: '400' }
+    }
+  ];
+  
+  var loadPromises = fonts.map(function(f) {
+    try {
+      var face = new FontFace(f.family, 'url("' + f.url + '")', f.descriptors);
+      return face.load().then(function(loaded) {
+        document.fonts.add(loaded);
+        return loaded;
+      }).catch(function() {
+        return null;
+      });
+    } catch (e) {
+      return Promise.resolve(null);
+    }
+  });
+  
+  Promise.all(loadPromises)
+    .then(function() {
+      return document.fonts.ready;
+    })
+    .then(reveal)
+    .catch(reveal);
+})();
+</script>    <title>Numeric Functions :: std::big_int</title>
+    <link rel="prev" href="literals.html">
+    <link rel="next" href="benchmarks.html">
+  <meta name="generator" content="Antora 3.1.15">
+    <link rel="stylesheet" href="./_/css/boostlook.css">
+    <link rel="stylesheet" href="./_/css/site.css">
+    <link rel="stylesheet" href="./_/css/vendor/tabs.css">
+    <script>
+    (function() {
+      if (window.self !== window.top) return;
+      var theme = localStorage.getItem('antora-theme');
+      if (!theme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        theme = 'dark';
+      }
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+    })();
+    </script>
+    <script>var uiRootPath = './_'</script>
+<link rel="icon" href="./_/img/favicons/favicon.ico" type="image/x-icon">
+    <!-- Favicon configuration -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./_/img/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./_/img/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./_/img/favicons/favicon-16x16.png">
+    <link rel="manifest" href="./_/img/favicons/site.webmanifest">
+    <link rel="shortcut icon" href="./_/img/favicons/favicon.ico">
+  </head>
+  <body class="article toc2 toc-left">
+    <div class="boostlook">
+   <div id="header">
+      <div id="toc" class="nav-container toc2" data-component="ROOT" data-version="">
+  <aside class="nav">
+    <button class="nav-close"></button>
+    <div class="panels">
+      <div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+      <div class="title-row">
+        <h3 class="title"><a href="overview.html">std::big_int</a></h3>
+        <button class="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme" style="display:none">
+  <i class="fas fa-sun theme-icon-light"></i>
+  <i class="fas fa-moon theme-icon-dark"></i>
+</button>      </div>
+      <ul class="nav-list">
+        <ul class="nav-list">
+        <li class="" data-depth="1">
+            <a class="nav-link" href="overview.html">Overview</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="overview.html#overview_introduction">Introduction</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="overview.html#overview_motivation">Motivation</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="overview.html#overview_supported_compilers">Supported Compilers</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="build_and_usage.html">Build and Usage</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="build_and_usage.html#build_and_usage_dependencies">Dependencies</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="build_and_usage.html#build_and_usage_build">Building</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="build_and_usage.html#build_and_usage_install">Installation</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="build_and_usage.html#build_and_usage_cmake">CMake configuration</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="build_and_usage.html#build_and_usage_using">Using <code>beman.big_int</code></a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="examples.html">Examples</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="examples.html#examples_foundational">Foundational Examples</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_construction">Construction</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_operators">Fundamental operators</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_factorial">Factorial</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_literals">User-defined literals</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_charconv">Numeric conversions</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_string">String conversions</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_numeric">Numeric functions</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_division">Integer division</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_io">Formatting and output</a>
+        </li>
+        </ul>
+        <li class="" data-depth="2">
+            <a class="nav-link" href="examples.html#examples_advanced">Advanced Examples</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_fibonacci">Fibonacci</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_roots">Roots</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_primes">Primes</a>
+        </li>
+              <li class="" data-depth="3">
+            <a class="nav-link" href="examples.html#examples_rsa">RSA</a>
+        </li>
+        </ul>
+  </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="api_reference.html">API Reference</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="api_reference.html#api_namespaces">Namespaces</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="api_reference.html#api_types">Types</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="api_reference.html#api_functions">Functions</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="big_int_type.html">The big_int Type</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_design">Design</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_synopsis">Synopsis</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_members">Member types and constants</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_construct">Constructors and destructor</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_assign">Assignment</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_compound">Compound assignment operators</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_swap">Swap</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_observers">Observers</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_unary">Unary operators</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_conv">Conversion operator</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_cmp">Comparison operators</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="big_int_type.html#big_int_type_binary">Binary operators</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="charconv.html"><code>&lt;charconv&gt;</code> Conversions</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="charconv.html#charconv_synopsis">Synopsis</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="charconv.html#charconv_to_chars">to_chars</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="charconv.html#charconv_from_chars">from_chars</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="string.html">String Conversions</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="string.html#string_synopsis">Synopsis</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="string.html#string_to_string">to_string</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="string.html#string_to_wstring">to_wstring</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="literals.html">User-Defined Literals</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="literals.html#literals_synopsis">Synopsis</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="literals.html#literals_scope">Bringing the literals into scope</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="literals.html#literals_suffix">The n and _n suffixes</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="literals.html#literals_bases">Bases, separators, and sign</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="literals.html#literals_constexpr">Compile-time evaluation</a>
+        </li>
+        </ul>
+        <li class=" is-current-page" data-depth="1">
+            <a class="nav-link" href="numeric.html">Numeric Functions</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="#numeric_synopsis">Synopsis</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="#numeric_abs">abs</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="#numeric_saturating_cast">saturating_cast</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="#numeric_gcd">gcd</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="benchmarks.html">Benchmarks</a>
+        </li>
+        <ul class="nav-list">
+        <li class="" data-depth="2">
+            <a class="nav-link" href="benchmarks.html#benchmarks_small_value">Small-value optimization</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="benchmarks.html#benchmarks_libraries">big_int vs Boost.Multiprecision and GMP</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="benchmarks.html#benchmarks_base_conversion">Base conversion and string representations</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="benchmarks.html#benchmarks_order_n">Order-N operations</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="benchmarks.html#benchmarks_arch_opts">Architecture-specific optimizations</a>
+        </li>
+              <li class="" data-depth="2">
+            <a class="nav-link" href="benchmarks.html#benchmarks_sources">Source programs</a>
+        </li>
+        </ul>
+        <li class="" data-depth="1">
+            <a class="nav-link" href="references.html">References</a>
+        </li>
+        </ul>
+  </ul>
+  </nav>
+</div>
+    </div>
+  </aside>
+</div>
+  </div>  <div id="content">
+    <article class="doc max-width-reset">
+  <div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li>
+      <a href="overview.html" aria-label="Home: std::big_int">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1rem" height="1rem" viewBox="0 -960 960 960" fill="#000000" aria-hidden="true"><path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z"/></svg>
+      </a>
+    </li>
+    <li><a href="numeric.html">Numeric Functions</a></li>
+  </ul>
+</nav>
+  <div class="search-container">
+    <div id="search-field" class="field has-filter">
+      <input id="search-input" type="text" placeholder="Search the docs" >
+    </div>
+  </div>
+<div class="spirit-nav">
+    <a accesskey="p" href="literals.html">
+      <span class="material-symbols-outlined" title="Previous: User-Defined Literals">arrow_back</span>
+    </a>
+    <a class="disabled" accesskey="u" aria-disabled="true" tabindex="-1">
+      <span class="material-symbols-outlined" title="Up:">arrow_upward</span>
+    </a>
+    <a accesskey="n" href="benchmarks.html">
+      <span class="material-symbols-outlined" title="Next: Benchmarks">arrow_forward</span>
+    </a>
+</div></div>
+    <h1 class="page">Numeric Functions</h1>
+  <div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>beman::big_int</code> provides non-member numeric functions that operate on
+<code>basic_big_int</code> values. They live in the <code>beman::big_int</code> namespace and are
+found by argument-dependent lookup, so an unqualified <code>abs(x)</code> resolves to them
+when <code>x</code> is a <code>basic_big_int</code>. Include them with <code>&lt;beman/big_int/numeric.hpp&gt;</code>,
+or transitively through the umbrella <code>&lt;beman/big_int.hpp&gt;</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="numeric_synopsis"><a class="anchor" href="#numeric_synopsis"></a>Synopsis</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-c++ hljs" data-lang="c++">namespace beman::big_int {
+
+template &lt;class T&gt;
+    requires /* T is a basic_big_int (after removing cv-qualifiers and references) */
+constexpr std::remove_cvref_t&lt;T&gt; abs(T&amp;&amp; x);
+
+template &lt;class R, std::size_t b, class L, class A&gt;
+    requires /* R is a signed or unsigned integer type */
+constexpr R saturating_cast(const basic_big_int&lt;b, L, A&gt;&amp; x) noexcept;
+
+template &lt;std::size_t b, class L, class A, class N&gt;
+constexpr /* common basic_big_int type */ gcd(basic_big_int&lt;b, L, A&gt;&amp;&amp; m, N&amp;&amp; n);
+template &lt;std::size_t b, class L, class A, class N&gt;
+constexpr /* common basic_big_int type */ gcd(const basic_big_int&lt;b, L, A&gt;&amp; m, N&amp;&amp; n);
+template &lt;class M, std::size_t b, class L, class A&gt;
+    requires /* M is a signed or unsigned integer type */
+constexpr basic_big_int&lt;b, L, A&gt; gcd(M&amp;&amp; m, basic_big_int&lt;b, L, A&gt;&amp;&amp; n);
+template &lt;class M, std::size_t b, class L, class A&gt;
+    requires /* M is a signed or unsigned integer type */
+constexpr basic_big_int&lt;b, L, A&gt; gcd(M&amp;&amp; m, const basic_big_int&lt;b, L, A&gt;&amp; n);
+
+} // namespace beman::big_int</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="numeric_abs"><a class="anchor" href="#numeric_abs"></a><code>abs</code></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-c++ hljs" data-lang="c++">template &lt;class T&gt;
+    requires /* T is a basic_big_int (after removing cv-qualifiers and references) */
+constexpr std::remove_cvref_t&lt;T&gt; abs(T&amp;&amp; x);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns the absolute value (the magnitude) of <code>x</code>.</p>
+</div>
+<div class="paragraph">
+<p>Unlike <code>std::abs</code>, this function can never overflow: <code>basic_big_int</code> is
+unbounded, so the magnitude of every value is representable.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Constraints:</strong> <code>std::remove_cvref_t&lt;T&gt;</code> is a specialization of <code>basic_big_int</code>.</p>
+</li>
+<li>
+<p><strong>Returns:</strong> A <code>basic_big_int</code> equal in magnitude to <code>x</code> and not less than <code>0</code>.</p>
+</li>
+<li>
+<p><strong>Throws:</strong> The sign manipulation itself does not throw.
+For an lvalue argument, any exception thrown while allocating the
+copied result (for example, <code>std::bad_alloc</code>); a value held in the in-place
+buffer, and any rvalue argument, allocates nothing.</p>
+</li>
+<li>
+<p><strong>Remarks:</strong> The function is usable in a constant expression.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="numeric_saturating_cast"><a class="anchor" href="#numeric_saturating_cast"></a><code>saturating_cast</code></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-c++ hljs" data-lang="c++">template &lt;class R, std::size_t b, class L, class A&gt;
+    requires /* R is a signed or unsigned integer type */
+constexpr R saturating_cast(const basic_big_int&lt;b, L, A&gt;&amp; x) noexcept;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Converts <code>x</code> to the integer type <code>R</code>, clamping the result to the range of <code>R</code>
+when the value of <code>x</code> does not fit. This is the saturating counterpart to the
+<code>explicit operator R()</code> conversion, which instead truncates the value modulo
+the width of <code>R</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Constraints:</strong> <code>R</code> is a signed or unsigned integer type.</p>
+</li>
+<li>
+<p><strong>Returns:</strong> If the integer value of <code>x</code> is representable as a value of type
+<code>R</code>, that value; otherwise the largest or smallest value representable by <code>R</code>,
+whichever is closer to the value of <code>x</code>. In particular, a value greater than
+the maximum of <code>R</code> saturates to that maximum, a value less than the minimum
+saturates to the minimum, and every negative value yields <code>0</code> when <code>R</code> is
+unsigned.</p>
+</li>
+<li>
+<p><strong>Throws:</strong> Nothing; the function is <code>noexcept</code>.</p>
+</li>
+<li>
+<p><strong>Remarks:</strong> The function is usable in a constant expression. The bounds of <code>R</code>
+are derived from its width, so extended integer types and bit-precise
+integers (<code>_BitInt</code>) are supported even where they lack a
+<code>std::numeric_limits</code> specialization.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="numeric_gcd"><a class="anchor" href="#numeric_gcd"></a><code>gcd</code></h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-c++ hljs" data-lang="c++">template &lt;std::size_t b, class L, class A, class N&gt;
+constexpr /* common basic_big_int type */ gcd(basic_big_int&lt;b, L, A&gt;&amp;&amp; m, N&amp;&amp; n);
+template &lt;std::size_t b, class L, class A, class N&gt;
+constexpr /* common basic_big_int type */ gcd(const basic_big_int&lt;b, L, A&gt;&amp; m, N&amp;&amp; n);
+template &lt;class M, std::size_t b, class L, class A&gt;
+    requires /* M is a signed or unsigned integer type */
+constexpr basic_big_int&lt;b, L, A&gt; gcd(M&amp;&amp; m, basic_big_int&lt;b, L, A&gt;&amp;&amp; n);
+template &lt;class M, std::size_t b, class L, class A&gt;
+    requires /* M is a signed or unsigned integer type */
+constexpr basic_big_int&lt;b, L, A&gt; gcd(M&amp;&amp; m, const basic_big_int&lt;b, L, A&gt;&amp; n);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Returns the greatest common divisor of <code>m</code> and <code>n</code>. This is the <code>basic_big_int</code>
+counterpart of <code>std::gcd</code>, and it accepts any combination of <code>basic_big_int</code> and
+built-in integer arguments as long as one of the two is a <code>basic_big_int</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-c++ hljs" data-lang="c++">const big_int a = 1071_n;
+
+gcd(a, 462_n);         // big_int and big_int
+gcd(a, 462);           // big_int and int
+gcd(462U, a);          // unsigned and big_int
+gcd(a, -462LL);        // signs are ignored</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Constraints:</strong> One operand is a specialization of <code>basic_big_int</code>, and the
+other is either the same specialization or a signed or unsigned integer type.
+Whether the other operand is admissible follows from the return type, which is
+ill-formed otherwise, so <code>bool</code>, character types, floating-point types, and a
+second, unrelated <code>basic_big_int</code> specialization all drop <code>gcd</code> out of overload
+resolution rather than producing a hard error. Two built-in integers are the
+business of <code>std::gcd</code>, not of these overloads.</p>
+</li>
+<li>
+<p><strong>Returns:</strong> The greatest common divisor of <code>|m|</code> and <code>|n|</code>. The result is never
+negative. If both arguments are zero the result is zero; otherwise
+<code>gcd(x, 0)</code> is <code>|x|</code>.</p>
+</li>
+<li>
+<p><strong>Throws:</strong> Any exception thrown while allocating the result or the values the
+reduction works on (for example, <code>std::bad_alloc</code>). Arguments whose magnitudes
+both fit a single limb, and an argument pair where one magnitude fits a single
+limb, are computed without allocating at all&#8201;&#8212;&#8201;however wide the other operand
+is, since a borrowed operand is not copied unless the reduction needs a mutable
+value.</p>
+</li>
+<li>
+<p><strong>Remarks:</strong> The function is usable in a constant expression. The result uses
+the allocator of the <code>basic_big_int</code> argument. Unlike <code>std::gcd</code>, no argument
+can fail to be representable in the result type: <code>basic_big_int</code> is unbounded,
+so the precondition that <code>std::gcd</code> places on <code>|m|</code> and <code>|n|</code> is vacuous here.
+The operands are taken by forwarding reference and classified the way the
+binary operators classify theirs, so passing a <code>basic_big_int</code> as an rvalue
+hands its storage to the computation while an lvalue is left untouched. There
+are four overloads rather than one because every <code>basic_big_int</code> drags namespace
+std into argument-dependent lookup through its allocator: <code>std::gcd</code> is always a
+candidate, and spelling the big_int operand as a specialization&#8201;&#8212;&#8201;something
+`std::gcd&#8217;s plain type parameter cannot deduce&#8201;&#8212;&#8201;is what makes these the more
+specialized overloads, and an unqualified call unambiguous.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="numeric_gcd_performance"><a class="anchor" href="#numeric_gcd_performance"></a>Algorithm</h3>
+<div class="paragraph">
+<p>Operand magnitudes that fit a single limb are reduced by the binary (Stein)
+algorithm, and a single-limb operand reduces a wide one through one short
+division, so neither case allocates or divides more than once.</p>
+</div>
+<div class="paragraph">
+<p>Wider operands are reduced by Lehmer&#8217;s algorithm in Jebelean&#8217;s double-digit
+form: the two leading limbs of the pair are run through the Euclidean algorithm
+on their own, and the cofactors of the steps that are provably steps of the
+full-precision reduction are applied to the operands with two single-limb
+multiplications. That trades one division per Euclidean step for a pair of
+linear passes per limb of progress. Where the leading limbs determine nothing&#8201;&#8212;&#8201;operands that differ widely in size&#8201;&#8212;&#8201;a division or a binary step carries the
+reduction instead.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/eisenwave/std-big-int/blob/main/tests/beman/big_int/gcd_bench.test.cpp">gcd_bench.test.cpp</a>
+measures the result against <code>boost::multiprecision::cpp_int</code>, which reduces
+wide operands with the same algorithm. It is built with the tests and runs when
+<code>BEMAN_BIG_INT_RUN_BENCHMARKS</code> is defined. On an Apple M4 Max (AppleClang,
+release build) the two agree to within 1% from 64 to 512 bits and stay within
+25% of each other through 4096 bits, while the cases that allocate nothing&#8201;&#8212;&#8201;a
+wide operand against a single-limb or built-in integer one&#8201;&#8212;&#8201;run about twice as
+fast.</p>
+</div>
+</div>
+</div>
+</div>
+  <div class="edit-this-page">
+      <a href="https://github.com/eisenwave/std-big-int/edit/develop/doc/modules/ROOT/pages/numeric.adoc">Edit this Page</a>
+      </div>
+      <nav class="pagination">
+        <span class="prev"><a href="literals.html">User-Defined Literals</a></span>
+        <span class="next"><a href="benchmarks.html">Benchmarks</a></span>
+    </nav>
+</article>
+</div>
+  <div id="footer">
+  <script id="site-script" src="./_/js/site.js" data-ui-root-path="./_"></script>
+<script async src="./_/js/vendor/highlight.js"></script>
+<script async src="./_/js/vendor/tabs.js" data-sync-storage-key="preferred-tab"></script>
+<script async src="./_/js/vendor/lunr.js"></script>
+<script async src="./_/js/search-ui.js" id="search-ui-script" data-site-root-path="."
+  data-ui-root-path="./_"></script>
+<script async src="./search-index.js"></script>
+</div>
+</div>
+  </body>
+</html>
